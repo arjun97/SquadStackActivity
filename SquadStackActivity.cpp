@@ -1,5 +1,10 @@
+//Code is written using C++
+
 #include<bits/stdc++.h>
 using namespace std;
+
+// Car class used to represent every car that is present in the lot
+//ParkingLot class used to represent the given parking lot
 
 class Car{
     string vehicle_reg_number;
@@ -20,10 +25,11 @@ class Car{
 class ParkingLot{
     int slots;  //number of slots available in parking lot
     set<int> available_slots;   //list of available slots
+    //Hashmaps have been used extensively to perform each operation in constant time
     unordered_map<int,list<string > >age_query; // given age find vrn of car
     unordered_map<int,string> car_parked;   //mapping slot with VRN
     unordered_map<string,pair<int,list<string>::iterator > > alloted_slot;  //mapping vrn with slot and age query
-    unordered_map<string,int> Cars; // given vrn find slot of the car
+    unordered_map<string,int> Cars; //given vrn find slot of the car
 
     public:
     ParkingLot(int n){
@@ -33,8 +39,10 @@ class ParkingLot{
         }
     }
 
-    string park_a_car(string reg_num,int age){  //called when car wants to enter
-        if(available_slots.size()<=0)   //Parking lot full
+    //function to park the car
+    string park_a_car(string reg_num,int age){
+        //Parking lot full
+        if(available_slots.size()<=0)
             return "Parking lot full";
         // Adding car to the parking lot
         int slot=*(available_slots.begin());
@@ -46,8 +54,10 @@ class ParkingLot{
         return "Car with vehicle registration number '" + reg_num + "' has been parked at slot number " + to_string(slot);
     }
     
-    string leaving_the_lot(int slot){   //called when car leaves the lot
-        if(available_slots.find(slot)!=available_slots.end()){  //already empty slot
+    //function for removing a car from the lot
+    string leaving_the_lot(int slot){
+        //Already empty slot
+        if(available_slots.find(slot)!=available_slots.end()){
             return "Slot already empty";
         }
         //Removing car from the lot
@@ -64,8 +74,9 @@ class ParkingLot{
         return "Slot number " + to_string(slot) + " vacated, the car with vehicle registration number '" + vrn + "' left the space, the driver of the car was of age " + age;
 
     }
-
-    vector<string> get_vehicles_for_age(int age){   //all vrn for cars with given age
+    
+    //All vrn of cars with drivers of given age
+    vector<string> get_vehicles_for_age(int age){
         vector<string> ans;
         if(age_query.find(age)==age_query.end())return ans;
         for(auto it=age_query[age].begin();it!=age_query[age].end();it++){
@@ -73,8 +84,9 @@ class ParkingLot{
         }
         return ans;
     }
-
-    vector<int> get_slots_for_age(int age){     //all slots for cars with given age
+    
+    //All slots of cars with drivers of given age
+    vector<int> get_slots_for_age(int age){
         vector<int> ans;
         if(age_query.find(age)==age_query.end())return ans;
         for(auto it=age_query[age].begin();it!=age_query[age].end();it++){
@@ -83,7 +95,8 @@ class ParkingLot{
         return ans;
     }
 
-    int get_slot_for_vrn(string vrn){      //slot for given vrn
+    //Slot for given vrn
+    int get_slot_for_vrn(string vrn){
         int ans;
         if(alloted_slot.find(vrn)==alloted_slot.end())return ans;
         ans = alloted_slot[vrn].first;
@@ -92,7 +105,10 @@ class ParkingLot{
 };
 
 int main(){
-    string filename = ""; //Please give the file path here
+    string filename;
+    cout<<"Enter the full file path here : ";
+    cin>>filename;
+    
     fstream read_file;
     read_file.open(filename, ios::in);
     string command;
@@ -107,6 +123,7 @@ int main(){
                     parking_lot=(p);
                     cout<<"Created parking of "+each_command+" slots"<<endl;
                 }
+            
             else if(each_command == "Park"){
                     iss>>each_command;
                     string vrn = each_command;
@@ -115,6 +132,7 @@ int main(){
                     int driver_age = stoi(each_command);
                     cout<<parking_lot->park_a_car(vrn, driver_age)<<endl;
                 }
+            
             else if(each_command == "Slot_numbers_for_driver_of_age"){
                     iss>>each_command;
                     vector<int> slots = parking_lot->get_slots_for_age(stoi(each_command));
